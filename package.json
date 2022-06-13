@@ -1,0 +1,24 @@
+{
+  "name": "fibers-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js DEVELOPMENT",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Aleksandar Veljković",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "awilix": "^7.0.3",
+    "axios": "^0.27.2",
+    "crypto-random-hex": "^1.0.0",
+    "joi": "^17.3.0",
+    "mysql2": "^2.2.5",
+    "restify": "^8.5.1",
+    "restify-cors-middleware": "^1.1.1",
+    "sequelize": "^6.3.5",
+    "sqlite3": "^5.0.0",
+    "uuid": "^8.3.1"
+  }
+}
