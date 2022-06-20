@@ -46,6 +46,14 @@ class ShipmentRouteHandlers extends BaseRouteHandlers {
 
         try {
             const shipment = await this.shipmentController.create(shipmentData);
+            await this.shipmentItemController.create({ 
+                shipment_id: shipment.id,
+                is_wrapper: true,
+                item_id: shipment.label,
+                quantity_unit: 'UNIT',
+                quantity_value: 1,
+                is_indexed: true,
+            });
             this.sendResponse(res, 201, 'Shipment created', shipment);
         } catch (err) {
             if (err instanceof ValidationError) {
@@ -82,7 +90,7 @@ class ShipmentRouteHandlers extends BaseRouteHandlers {
             }
 
             if (include_items) {
-                shipment.items = await this.shipmentItemsController.findAll({ shipment_id: shipmentId });
+                shipment.dataValues.items = await this.shipmentItemController.findAll({ shipment_id: shipmentId, is_wrapper: false });
             }
             this.sendResponse(res, 200, 'Success', shipment);
         } catch (err) {
@@ -151,43 +159,6 @@ class ShipmentRouteHandlers extends BaseRouteHandlers {
                 await this.shipmentController
                 .findAndDelete({ id: shipmentId });
                 this.sendResponse(res, 201, 'Shipment deleted', null);
-            }
-        } catch (err) {
-            if (err instanceof ValidationError) {
-                this.sendResponse(res, 400, 'Error', { error: 'invalid_request', error_description: err.message });
-            } else {
-                this.utils.log(err);
-                this.sendResponse(res, 500, 'Error', { error: 'internal_error', error_description: 'Internal server error' });
-            }
-        }
-
-        return next();
-    }
-
-   /**
-   * Receive shipment items table
-   * @param {*} req
-   * @param {*} res
-   * @param {*} next
-   * @returns
-   */
-     async receiveShipmentItemsTableHandler(req, res, next) {
-        this.utils.log('Receive shipment items table request received');
-
-        const { id: shipmentId } = req.params;
-        const { shipmentTable } = req.body;
-
-        // TODO: Check table contents
-
-        try {
-            const shipment = await this.shipmentController.findOne({ id: shipmentId });
-            if (shipment == null) {
-                this.sendResponse(res, 404, 'Error', { error: 'not_found', error_description: 'Shipment not found' });
-            } else {
-                // TODO: Check update permissions
-                await this.shipmentController
-                .findAndUpdate({ id: shipmentId }, { reconciliationTable: shipmentTable });
-                this.sendResponse(res, 201, 'Shipment table updated', null);
             }
         } catch (err) {
             if (err instanceof ValidationError) {

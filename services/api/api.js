@@ -5,6 +5,8 @@ const corsMiddleware = require('restify-cors-middleware');
 const BaseRouteHandlers = require('./base-route-handlers');
 const ShipmentRouteHandlers = require('./route-handlers/shipment-route-handlers');
 const ShipmentItemRouteHandlers = require('./route-handlers/shipment-item-route-handlers');
+const BlockchainRouteHandlers = require('./route-handlers/blockchain-route-handlers');
+const NetworkRouteHandlers = require('./route-handlers/network-route-handlers');
 
 // Cors middelware parameters
 const cors = corsMiddleware({
@@ -25,7 +27,8 @@ class RestServer {
     this.baseRouteHandlers = new BaseRouteHandlers(ctx);
     this.shipmentRouteHandlers = new ShipmentRouteHandlers(ctx);
     this.shipmentItemRouteHandlers = new ShipmentItemRouteHandlers(ctx);
-    
+    this.blockchainRouteHandlers = new BlockchainRouteHandlers(ctx);
+    this.networkRouteHandlers = new NetworkRouteHandlers(ctx);
 
     this.unprotectedRoutes = [
       {
@@ -78,6 +81,14 @@ class RestServer {
     this.server.get('/shipment-items/:id', this.shipmentItemRouteHandlers.fetchSingleShipmentItemHandler.bind(this.shipmentItemRouteHandlers));
     this.server.put('/shipment-items/:id', this.shipmentItemRouteHandlers.updateShipmentItemHandler.bind(this.shipmentItemRouteHandlers));
     this.server.del('/shipment-items/:id', this.shipmentItemRouteHandlers.deleteShipmentItemHandler.bind(this.shipmentItemRouteHandlers));
+
+    // Blockchain interaction handlers
+    this.server.post('/blockchain/submit/:id', this.blockchainRouteHandlers.submitShipmentHandler.bind(this.blockchainRouteHandlers));
+    this.server.post('/blockchain/confirm/:id', this.blockchainRouteHandlers.confirmShipmentHandler.bind(this.blockchainRouteHandlers));
+
+    // Network handlers
+    this.server.get('/network/partners', this.networkRouteHandlers.fetchPartnersHandler.bind(this.networkRouteHandlers));
+    this.server.post('/network/shipment', this.networkRouteHandlers.receiveShipmentHandler.bind(this.networkRouteHandlers));
   }
 
   /**

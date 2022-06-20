@@ -8,6 +8,7 @@ class ShipmentItemController extends Controller {
     const schemes = {
       create: Joi.object({
         shipment_id: Joi.string().error(() => new ValidationError('Missing or invalid shipment id')),
+        is_wrapper: Joi.boolean().error(() => new ValidationError('Missing or invalid is wrapper flag')),
         item_id: Joi.string().error(() => new ValidationError('Missing or invalid item id')),
         quantity_unit: Joi.string().error(() => new ValidationError('Missing or invalid item quantity unit')),
         quantity_value: Joi.number().error(() => new ValidationError('Missing or invalid item quantity value')),
@@ -16,6 +17,7 @@ class ShipmentItemController extends Controller {
       
       update: Joi.object({
         shipment_id: Joi.string().error(() => new ValidationError('Missing or invalid shipment id')),
+        is_wrapper: Joi.boolean().error(() => new ValidationError('Invalid is wrapper flag')),
         item_id: Joi.string().error(() => new ValidationError('Missing or invalid item id')),
         quantity_unit: Joi.string().error(() => new ValidationError('Missing or invalid item quantity unit')),
         quantity_value: Joi.number().error(() => new ValidationError('Missing or invalid item quantity value')),

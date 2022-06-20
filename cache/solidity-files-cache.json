@@ -1,0 +1,114 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "/Users/aleksandarveljkovic/Projects/fibers-node/contracts/fibers.sol": {
+      "lastModificationDate": 1655476642162,
+      "contentHash": "2f30b30042d0c94f7104a012d9949997",
+      "sourceName": "contracts/fibers.sol",
+      "solcConfig": {
+        "version": "0.8.13",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./shipment-verifier.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.13"
+      ],
+      "artifacts": [
+        "Fibers"
+      ]
+    },
+    "/Users/aleksandarveljkovic/Projects/fibers-node/contracts/shipment-verifier.sol": {
+      "lastModificationDate": 1655476368052,
+      "contentHash": "8f4e41b0dfa072006551022915bee56b",
+      "sourceName": "contracts/shipment-verifier.sol",
+      "solcConfig": {
+        "version": "0.8.13",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.13"
+      ],
+      "artifacts": [
+        "Pairing",
+        "ShipmentVerifier"
+      ]
+    },
+    "/Users/aleksandarveljkovic/Projects/fibers-node/contracts/public-validation-verifier.sol": {
+      "lastModificationDate": 1655455393040,
+      "contentHash": "3eec849e6fe7e868bc342b9759c8c063",
+      "sourceName": "contracts/public-validation-verifier.sol",
+      "solcConfig": {
+        "version": "0.8.13",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.13"
+      ],
+      "artifacts": [
+        "Pairing",
+        "PublicValidationVerifier"
+      ]
+    }
+  }
+}

@@ -25,6 +25,10 @@ class Controller {
     return this.model.create(data);
   }
 
+  bulkCreate(data) {
+    return this.model.bulkCreate(data);
+  }
+
   findAll(query, allowedAttributes) {
     return this.model.findAll({ where: query, attributes: allowedAttributes, order: [['createdAt', 'ASC']]});
   }

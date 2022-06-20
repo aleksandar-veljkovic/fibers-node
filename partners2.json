@@ -1,0 +1,60 @@
+[
+  {
+    "id": "e0e4e311e7ed4be7502717bf8e0ef1436bffe22fe51e41ac58de978439ad8e7c",
+    "title": "Node 1 Company",
+    "country": "Serbia",
+    "state": "Serbia",
+    "city": "Belgrade",
+    "address": "Unknown street 1",
+    "email": "office@democompany1.com",
+    "createdAt": "2022-06-15T16:54:42.655Z",
+    "updatedAt": "2022-06-15T16:55:16.206Z",
+    "departments": [
+      {
+        "id": "2f7675104645c7a984a17140dceff0b58aa788a2e89fc29dc0074b0708862ab9",
+        "company_id": "e0e4e311e7ed4be7502717bf8e0ef1436bffe22fe51e41ac58de978439ad8e7c",
+        "title": "Demo Company Department 1",
+        "country": "Serbia",
+        "state": "Serbia",
+        "city": "Belgrade",
+        "address": "Unknown street 1",
+        "email": "dep1@democompany1.com",
+        "latitude": 44,
+        "longitude": 20,
+        "pub_address": "0x37e828F6E270EC2AFF4FecFB3098aac0B878B653",
+        "api": "http://localhost:9229",
+        "createdAt": "2022-06-15T16:56:20.068Z",
+        "updatedAt": "2022-06-15T16:56:20.068Z"
+      }
+    ]
+  },
+  {
+    "id": "3b4bd0b82e7d716658cab65b881094a6715eaf64ec8ba225d82b342ef5152371",
+    "title": "Node 2 Company",
+    "country": "Serbia",
+    "state": "Serbia",
+    "city": "Belgrade",
+    "address": "Unknown street 2",
+    "email": "office@democompany2.com",
+    "createdAt": "2022-06-15T16:54:52.604Z",
+    "updatedAt": "2022-06-15T16:54:52.604Z",
+    "departments": [
+      {
+        "id": "0bed4558c8667bf8983f0a537fc134c48757c3ff3cd7798d8620d25dfba164a9",
+        "company_id": "3b4bd0b82e7d716658cab65b881094a6715eaf64ec8ba225d82b342ef5152371",
+        "title": "Demo Company Department 2",
+        "country": "Serbia",
+        "state": "Serbia",
+        "city": "Belgrade",
+        "address": "Unknown street 2",
+        "email": "dep1@democompany2.com",
+        "latitude": 44,
+        "longitude": 20,
+        "pub_address": "0x37e828F6E270EC2AFF4FecFB3098aac0B878B653",
+        "api": "http://localhost:9339",
+        "createdAt": "2022-06-15T16:56:38.396Z",
+        "updatedAt": "2022-06-15T16:56:38.396Z"
+      }
+    ]
+  }
+]

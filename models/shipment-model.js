@@ -6,21 +6,17 @@ module.exports = (db) => db.define('Shipment', {
     allowNull: false,
     primaryKey: true,
   },
-  creation_transaction_num: {
+  creation_transaction_hash: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  shipment_hash: {
+  shipment_fingerprint: {
     type: DataTypes.STRING,
     allowNull: true,
   },
   label: {
     type: DataTypes.STRING,
     allowNull: false,
-  },
-  relabel: {
-    type: DataTypes.STRING,
-    allowNull: true,
   },
   source_company: {
     type: DataTypes.STRING,
@@ -48,22 +44,17 @@ module.exports = (db) => db.define('Shipment', {
   },
   receiving_date: {
     type: DataTypes.DATE,
-    allowNull: false,
+    allowNull: true,
   },
   received_mass: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
   },
   status: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  reconciliation_requested: {
-    type: DataTypes.BOOLEAN,
-    default: false,
-    allowNull: false,
-  },
-  reconciliationTable: {
+  reconciliation_table: {
     type: DataTypes.JSONB,
     allowNull: true,
   }

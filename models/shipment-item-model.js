@@ -6,8 +6,13 @@ module.exports = (db) => db.define('ShipmentItem', {
         allowNull: false,
         primaryKey: true,
     },
-        shipment_id: {
+    shipment_id: {
         type: DataTypes.STRING,
+        allowNull: false,
+    },
+    is_wrapper: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
         allowNull: false,
     },
     item_id: {

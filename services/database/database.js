@@ -8,6 +8,6 @@ module.exports = (config) => new Sequelize(
     host: config.db.host,
     dialect: config.db.dialect,
     logging: false,
-    storage: 'db.sqlite',
+    storage: `${config.db.database}.sqlite`,
   },
 );

@@ -1,12 +1,17 @@
 const App = require('./app');
-const rawConfig = require('./config');
-
 let env = 'DEVELOPMENT';
+let configRoute = './config';
 
 if (process.argv.length > 2) {
   // eslint-disable-next-line prefer-destructuring
   env = process.argv[2];
+
+  if (process.argv[3] != null) {
+    configRoute = `./config.${process.argv[3]}`;
+  }
 }
+
+const rawConfig = require(configRoute);
 
 const config = rawConfig[env];
 config.env = env;

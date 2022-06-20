@@ -52,6 +52,9 @@ class App {
       this.utils.log('Synchronizing database...');
       await this.db.sync({ alter: true });
 
+      // Fetch the latest routing table
+      await this.utils.loadPartners();
+
       // Initializing API
       this.api.start();
     })();
