@@ -28,6 +28,26 @@ class Utils {
         }
     }
 
+    unstringifyBigInts(o) {
+        if ((typeof(o) == "string") && (/^[0-9]+$/.test(o) ))  {
+            return BigInt(o);
+        } else if ((typeof(o) == "string") && (/^0x[0-9a-fA-F]+$/.test(o) ))  {
+            return BigInt(o);
+        } else if (Array.isArray(o)) {
+            return o.map(this.unstringifyBigInts.bind(this));
+        } else if (typeof o == "object") {
+            if (o===null) return null;
+            const res = {};
+            const keys = Object.keys(o);
+            keys.forEach( (k) => {
+                res[k] = this.unstringifyBigInts(o[k]);
+            });
+            return res;
+        } else {
+            return o;
+        }
+    }
+
     async loadPartners() {
         if (this.partnersLoadingTimeout != null) {
             clearTimeout(this.partnersLoadingTimeout);
@@ -45,7 +65,7 @@ class Utils {
         this.partnersLoadingTimeout = setTimeout(() => this.loadPartners(), 3 * 3600 * 1000);
     }
 
-    static generateId() { return randomHex(32); }
+    generateId() { return randomHex(32).padStart(64, '0'); }
 
     findAPI(targetCompanyId, targetDepartmentId) {
         const targetCompany = this.partners.find(company => company.id === targetCompanyId);
@@ -113,7 +133,7 @@ class Utils {
      * @returns 
      */
     async generateShipmentHash(items, shipmentId) {
-        const { tree: itemsTree, itemIdHashes, leaves } = await generateItemsTree(items);
+        const { tree: itemsTree, itemIdHashes, leaves } = await this.generateItemsTree(items);
         const { root: itemsRoot } = itemsTree;
 
         const poseidon = await buildPoseidon();

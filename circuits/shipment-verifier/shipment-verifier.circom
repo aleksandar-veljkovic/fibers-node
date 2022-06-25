@@ -6,14 +6,16 @@ template CheckShipmentHash() {
     // Private inputs
     signal input itemsRootHash;
     signal input shipmentId;
+    signal input salt;
     
     // Public inputs
     signal input shipmentIdHash;
     signal input shipmentHash;
 
     // Check shipmentIdHash value
-    component shipmentIdPoseidon = Poseidon(1);
+    component shipmentIdPoseidon = Poseidon(2);
     shipmentIdPoseidon.inputs[0] <== shipmentId;
+    shipmentIdPoseidon.inputs[1] <== salt;
     shipmentIdHash === shipmentIdPoseidon.out;
 
     // Transaction hash computation (id + root)

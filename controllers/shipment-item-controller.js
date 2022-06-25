@@ -13,6 +13,7 @@ class ShipmentItemController extends Controller {
         quantity_unit: Joi.string().error(() => new ValidationError('Missing or invalid item quantity unit')),
         quantity_value: Joi.number().error(() => new ValidationError('Missing or invalid item quantity value')),
         is_indexed: Joi.boolean().error(() => new ValidationError('Missing or invalid item indexing flag')),
+        proof: Joi.object().error(() => new ValidationError('Missing or invalid proof')),
       }),
       
       update: Joi.object({
@@ -22,6 +23,7 @@ class ShipmentItemController extends Controller {
         quantity_unit: Joi.string().error(() => new ValidationError('Missing or invalid item quantity unit')),
         quantity_value: Joi.number().error(() => new ValidationError('Missing or invalid item quantity value')),
         is_indexed: Joi.boolean().error(() => new ValidationError('Missing or invalid item indexing flag')),
+        proof: Joi.object().error(() => new ValidationError('Missing or invalid proof')),
       }),
     };
 

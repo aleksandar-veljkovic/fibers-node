@@ -1,5 +1,4 @@
 const { ValidationError } = require('joi');
-const utils = require('../services/utils/utils');
 
 class Controller {
   constructor(model, schemes) {
@@ -19,7 +18,7 @@ class Controller {
 
     if (data.id == null) {
       // eslint-disable-next-line no-param-reassign
-      data.id = utils.generateId();
+      data.id = this.utils.generateId();
     }
 
     return this.model.create(data);

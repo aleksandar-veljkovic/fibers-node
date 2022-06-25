@@ -88,7 +88,9 @@ class RestServer {
 
     // Network handlers
     this.server.get('/network/partners', this.networkRouteHandlers.fetchPartnersHandler.bind(this.networkRouteHandlers));
-    this.server.post('/network/shipment', this.networkRouteHandlers.receiveShipmentHandler.bind(this.networkRouteHandlers));
+    this.server.post('/network/shipments', this.networkRouteHandlers.receiveShipmentHandler.bind(this.networkRouteHandlers));
+    this.server.get('/network/shipments/:labelHash', this.networkRouteHandlers.requestShipmentByHashHandler.bind(this.networkRouteHandlers));
+    this.server.get('/network/query/:itemId', this.networkRouteHandlers.queryHandler.bind(this.networkRouteHandlers));
   }
 
   /**

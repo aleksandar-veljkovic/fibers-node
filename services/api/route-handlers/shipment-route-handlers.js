@@ -1,6 +1,8 @@
 const { ValidationError } = require('joi');
 const { UniqueConstraintError } = require('sequelize');
 const BaseRouteHandlers = require('../base-route-handlers');
+const { buildPoseidon } = require('circomlibjs');
+const bytes32 = require('bytes32');
 
 // ------------------------------------------------
 // Shipment
@@ -42,10 +44,27 @@ class ShipmentRouteHandlers extends BaseRouteHandlers {
             return next();
         }
 
+        // Generate shipment label hash
         const shipmentData = req.body;
+        const poseidon = await buildPoseidon();
+
+        const salt = this.utils.generateId();
+        const shipmentLabelHex = bytes32({ input: shipmentData.label }, { ignoreLength: true });
+        const hash = poseidon.F.toString(poseidon([BigInt(shipmentLabelHex, 'hex'), BigInt(`0x${salt}`, 'hex')]));
+        const paddedHash = BigInt(hash).toString(16).padStart(64,'0');
+        shipmentData.label_hash = paddedHash;
+
+        const proof = await this.zk.generateShipmentLabelHashProof(shipmentLabelHex, salt, hash);
+
+        // Assign shipment creator
+        shipmentData.shipment_creator = this.config.departmentId;
+        shipmentData.salt = salt;
+        shipmentData.label_hash_proof = proof;
 
         try {
             const shipment = await this.shipmentController.create(shipmentData);
+
+            // Add shipment wrapper item
             await this.shipmentItemController.create({ 
                 shipment_id: shipment.id,
                 is_wrapper: true,
@@ -53,6 +72,7 @@ class ShipmentRouteHandlers extends BaseRouteHandlers {
                 quantity_unit: 'UNIT',
                 quantity_value: 1,
                 is_indexed: true,
+                proof,
             });
             this.sendResponse(res, 201, 'Shipment created', shipment);
         } catch (err) {
@@ -81,7 +101,7 @@ class ShipmentRouteHandlers extends BaseRouteHandlers {
 
         this.utils.log('Fetch single shipment request received');
 
-        const shipmentId = req.params.id;
+        const shipmentId = req.params.id;   
 
         try {
             const shipment = await this.shipmentController.findOne({ id: shipmentId });
@@ -117,6 +137,11 @@ class ShipmentRouteHandlers extends BaseRouteHandlers {
 
         const { id: shipmentId } = req.params;
         const shipmentUpdate = req.body;
+        const { items } = shipmentUpdate;
+        
+        if (items != null) {
+            delete shipmentUpdate.items;
+        }
 
         try {
             const shipment = await this.shipmentController.findOne({ id: shipmentId });
@@ -124,10 +149,16 @@ class ShipmentRouteHandlers extends BaseRouteHandlers {
             if (shipment == null) {
                 this.sendResponse(res, 404, 'Error', { error: 'not_found', error_description: 'Shipment not found' });
             } else {
+                if (items != null) {
+                    await this.shipmentItemController.findAndDelete({ shipment_id: shipmentId, is_wrapper: false });
+                    await this.shipmentItemController.bulkCreate(items.map(item => ({ ...item, id: this.utils.generateId() })));
+                }
+
                 await this.shipmentController.findAndUpdate({ id: shipmentId }, shipmentUpdate);
                 this.sendResponse(res, 201, 'Shipment updated', null);
             }
         } catch (err) {
+            console.log(err);
             if (err instanceof ValidationError) {
                 this.sendResponse(res, 400, 'Error', { error: 'invalid_request', error_description: err.message });
             } else {

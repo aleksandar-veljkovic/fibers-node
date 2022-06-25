@@ -106,7 +106,8 @@ describe("Full test with shipment registration, confirmation, and inclusion proo
 
         // Generate shipment hash
         const shipmentId = "0x536869706d656e74310000000000000000000000000000000000000000000000"; // bytes32("Shipment1");
-        const shipmentIdHash = poseidon.F.toString(poseidon([BigInt(shipmentId, 'hex')]));
+        const salt = 42;
+        const shipmentIdHash = poseidon.F.toString(poseidon([BigInt(shipmentId, 'hex'), salt]));
 
         const shipmentItems = [
             {
@@ -134,6 +135,7 @@ describe("Full test with shipment registration, confirmation, and inclusion proo
             // Private inputs
             itemsRootHash,
             shipmentId,
+            salt,
                 
             // Public inputs
             shipmentIdHash,
@@ -219,6 +221,7 @@ describe("Full test with shipment registration, confirmation, and inclusion proo
             path_elements: inclusionProof.siblings.map(arr => arr[0].toString()),
             path_index: inclusionProof.pathIndices.map(el => `${el}`),
             shipmentId: shipmentId,
+            salt,
             
             // Public inputs
             itemIdHash,

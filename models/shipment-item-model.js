@@ -30,5 +30,9 @@ module.exports = (db) => db.define('ShipmentItem', {
     is_indexed: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
+    },
+    proof: {
+        type: DataTypes.JSON,
+        allowNull: true,
     }
 });

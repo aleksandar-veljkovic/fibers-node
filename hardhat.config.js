@@ -5,6 +5,9 @@ module.exports = {
     networks: {
       hardhat: {
       },
+      localhost: {
+        
+      }
     },
     paths: {
       sources: "./contracts",

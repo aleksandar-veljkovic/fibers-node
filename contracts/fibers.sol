@@ -3,12 +3,11 @@ pragma solidity ^0.8.13;
 import "./shipment-verifier.sol";
 
 contract Fibers is ShipmentVerifier {
-    event SentShipmentRegistered(bytes32 shipmentId, bytes32 recipientCompany, bytes32 recipientDepartment);
-    event ReceivedShipmentRegistered(bytes32 shipmentId, bytes32 senderCompany, bytes32 senderDepartment);
-    event ShipmentConfirmed(bytes32 shipmentId);
+    event ShipmentRegistered(bytes32 shipmentLabelHash, bytes32 senderDepartment, bytes32 recipientDepartment);
+    event ShipmentConfirmed(bytes32 shipmentLabelHash);
 
     struct Shipment {
-        bytes32 shipmentIdHash;
+        bytes32 shipmentLabelHash;
         bytes32 sentShipmentHash;
         bytes32 receivedShipmentHash;
         uint sentMass;
@@ -19,6 +18,7 @@ contract Fibers is ShipmentVerifier {
         bytes32 senderDepartment;
         bytes32 recipientCompany;
         bytes32 recipientDepartment;
+        bytes32 shipmentCreator;
         bool isConfirmed;
     }
 
@@ -28,7 +28,7 @@ contract Fibers is ShipmentVerifier {
      * Register new shipment as sender
      */
      function registerSentShipment(
-        bytes32 shipmentIdHash,
+        bytes32 shipmentLabelHash,
         bytes32 sentShipmentHash,
         uint sentMass,
         uint sentDate,
@@ -37,10 +37,10 @@ contract Fibers is ShipmentVerifier {
         bytes32 recipientCompany,
         bytes32 recipientDepartment
     ) public {
-        require(shipments[shipmentIdHash].shipmentIdHash == bytes32(0), "Shipment already registered");
+        require(shipments[shipmentLabelHash].shipmentLabelHash == bytes32(0), "Shipment already registered");
 
         Shipment memory newShipment;
-        newShipment.shipmentIdHash = shipmentIdHash;
+        newShipment.shipmentLabelHash = shipmentLabelHash;
         newShipment.sentShipmentHash = sentShipmentHash;
         newShipment.sentMass = sentMass;
         newShipment.sentDate = sentDate;
@@ -48,14 +48,17 @@ contract Fibers is ShipmentVerifier {
         newShipment.senderDepartment = senderDepartment;
         newShipment.recipientCompany = recipientCompany;
         newShipment.recipientDepartment = recipientDepartment;
-        shipments[shipmentIdHash] = newShipment;
+        newShipment.shipmentCreator = senderDepartment;
+        shipments[shipmentLabelHash] = newShipment;
+
+        emit ShipmentRegistered(shipmentLabelHash, senderDepartment, recipientDepartment);
     }
 
     /**
      * Register new shipment as recipient
      */
      function registerReceivedShipment(
-        bytes32 shipmentIdHash,
+        bytes32 shipmentLabelHash,
         bytes32 receivedShipmentHash,
         uint receivedMass,
         uint receivedDate,
@@ -64,10 +67,10 @@ contract Fibers is ShipmentVerifier {
         bytes32 recipientCompany,
         bytes32 recipientDepartment
     ) public {
-        require(shipments[shipmentIdHash].shipmentIdHash == bytes32(0), "Shipment already registered");
+        require(shipments[shipmentLabelHash].shipmentLabelHash == bytes32(0), "Shipment already registered");
 
         Shipment memory newShipment;
-        newShipment.shipmentIdHash = shipmentIdHash;
+        newShipment.shipmentLabelHash = shipmentLabelHash;
         newShipment.receivedShipmentHash = receivedShipmentHash;
         newShipment.receivedMass = receivedMass;
         newShipment.receivedDate = receivedDate;
@@ -75,7 +78,10 @@ contract Fibers is ShipmentVerifier {
         newShipment.senderDepartment = senderDepartment;
         newShipment.recipientCompany = recipientCompany;
         newShipment.recipientDepartment = recipientDepartment;
-        shipments[shipmentIdHash] = newShipment;
+        newShipment.shipmentCreator = recipientDepartment;
+        shipments[shipmentLabelHash] = newShipment;
+
+        emit ShipmentRegistered(shipmentLabelHash, senderDepartment, recipientDepartment);
     }
 
     /**
@@ -85,20 +91,22 @@ contract Fibers is ShipmentVerifier {
         uint[2] memory a,
         uint[2][2] memory b,
         uint[2] memory c,
-        bytes32 shipmentIdHash,
+        bytes32 shipmentLabelHash,
         bytes32 sentShipmentHash,
         uint sentMass,
         uint sentDate
     ) public {
-        require(shipments[shipmentIdHash].shipmentIdHash != bytes32(0), "Shipment not registered");
-        require(shipments[shipmentIdHash].isConfirmed == false, "Shipment is already confirmed");
-        require(shipments[shipmentIdHash].sentShipmentHash == 0, "Sent shipment data is already added");
-        require(verifyProof(a, b, c, [uint(shipmentIdHash), uint(sentShipmentHash)]) == true, "Invalid proof");
+        require(shipments[shipmentLabelHash].shipmentLabelHash != bytes32(0), "Shipment not registered");
+        require(shipments[shipmentLabelHash].isConfirmed == false, "Shipment is already confirmed");
+        require(shipments[shipmentLabelHash].sentShipmentHash == 0, "Sent shipment data is already added");
+        require(verifyProof(a, b, c, [uint(shipmentLabelHash), uint(sentShipmentHash)]) == true, "Invalid proof");
 
-        shipments[shipmentIdHash].sentShipmentHash = sentShipmentHash;
-        shipments[shipmentIdHash].sentMass = sentMass;
-        shipments[shipmentIdHash].sentDate = sentDate;
-        shipments[shipmentIdHash].isConfirmed = true;
+        shipments[shipmentLabelHash].sentShipmentHash = sentShipmentHash;
+        shipments[shipmentLabelHash].sentMass = sentMass;
+        shipments[shipmentLabelHash].sentDate = sentDate;
+        shipments[shipmentLabelHash].isConfirmed = true;
+
+        emit ShipmentConfirmed(shipmentLabelHash);
     }
 
     /**
@@ -108,23 +116,25 @@ contract Fibers is ShipmentVerifier {
         uint[2] memory a,
         uint[2][2] memory b,
         uint[2] memory c,
-        bytes32 shipmentIdHash,
+        bytes32 shipmentLabelHash,
         bytes32 receivedShipmentHash,
         uint receivedMass,
         uint receivedDate
     ) public {
-        require(shipments[shipmentIdHash].shipmentIdHash != bytes32(0), "Shipment not registered");
-        require(shipments[shipmentIdHash].isConfirmed == false, "Shipment is already confirmed");
-        require(shipments[shipmentIdHash].receivedShipmentHash == 0, "Sent shipment data is already added");
-        require(verifyProof(a, b, c, [uint256(shipmentIdHash), uint256(receivedShipmentHash) ]) == true, "Invalid proof");
+        require(shipments[shipmentLabelHash].shipmentLabelHash != bytes32(0), "Shipment not registered");
+        require(shipments[shipmentLabelHash].isConfirmed == false, "Shipment is already confirmed");
+        require(shipments[shipmentLabelHash].receivedShipmentHash == 0, "Sent shipment data is already added");
+        require(verifyProof(a, b, c, [uint256(shipmentLabelHash), uint256(receivedShipmentHash) ]) == true, "Invalid proof");
 
-        shipments[shipmentIdHash].receivedShipmentHash = receivedShipmentHash;
-        shipments[shipmentIdHash].receivedMass = receivedMass;
-        shipments[shipmentIdHash].receivedDate = receivedDate;
-        shipments[shipmentIdHash].isConfirmed = true;
+        shipments[shipmentLabelHash].receivedShipmentHash = receivedShipmentHash;
+        shipments[shipmentLabelHash].receivedMass = receivedMass;
+        shipments[shipmentLabelHash].receivedDate = receivedDate;
+        shipments[shipmentLabelHash].isConfirmed = true;
+
+        emit ShipmentConfirmed(shipmentLabelHash);
     }
 
-    function getShipment(bytes32 shipmentIdHash) public view returns (Shipment memory s) {
-        s = shipments[shipmentIdHash];
+    function getShipment(bytes32 shipmentLabelHash) public view returns (Shipment memory s) {
+        s = shipments[shipmentLabelHash];
     }
 }

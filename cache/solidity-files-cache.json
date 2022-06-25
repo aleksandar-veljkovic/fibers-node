@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/aleksandarveljkovic/Projects/fibers-node/contracts/fibers.sol": {
-      "lastModificationDate": 1655476642162,
-      "contentHash": "2f30b30042d0c94f7104a012d9949997",
+      "lastModificationDate": 1656109916519,
+      "contentHash": "f2328951ef96e40d905259b8e4a43bc6",
       "sourceName": "contracts/fibers.sol",
       "solcConfig": {
         "version": "0.8.13",
@@ -39,8 +39,8 @@
       ]
     },
     "/Users/aleksandarveljkovic/Projects/fibers-node/contracts/shipment-verifier.sol": {
-      "lastModificationDate": 1655476368052,
-      "contentHash": "8f4e41b0dfa072006551022915bee56b",
+      "lastModificationDate": 1656167592271,
+      "contentHash": "7d24d229552ee4bebb8e5bd104b78a16",
       "sourceName": "contracts/shipment-verifier.sol",
       "solcConfig": {
         "version": "0.8.13",

@@ -8,10 +8,14 @@ class BaseRouteHandlers {
       utils,
       shipmentController,
       shipmentItemController,
+      blockchain,
+      zk,
     }) {
       this.config = config;
       this.utils = utils;
       this.log = utils.log;
+      this.blockchain = blockchain;
+      this.zk = zk;
   
       // Controllers
       this.shipmentController = shipmentController;

@@ -6,15 +6,31 @@ module.exports = (db) => db.define('Shipment', {
     allowNull: false,
     primaryKey: true,
   },
-  creation_transaction_hash: {
+  sent_shipment_hash: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  shipment_fingerprint: {
+  received_shipment_hash: {
     type: DataTypes.STRING,
     allowNull: true,
-  },
+  }, 
   label: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  label_hash: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  label_hash_proof: {
+    type: DataTypes.JSON,
+    allowNull: true,
+  },
+  salt: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  shipment_creator: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -36,11 +52,11 @@ module.exports = (db) => db.define('Shipment', {
   },
   sent_mass: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
   },
   sending_date: {
     type: DataTypes.DATE,
-    allowNull: false,
+    allowNull: true,
   },
   receiving_date: {
     type: DataTypes.DATE,

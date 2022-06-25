@@ -24,6 +24,7 @@ template ShipmentInclusionProof(n) {
     signal input path_elements[n];
     signal input path_index[n];
     signal input shipmentId;
+    signal input salt;
     
     // Public inputs
     signal input itemIdHash;
@@ -31,8 +32,9 @@ template ShipmentInclusionProof(n) {
     signal input shipmentHash;
     
     // Verify shipment id hash
-    component shipmentIdPoseidon = Poseidon(1);
+    component shipmentIdPoseidon = Poseidon(2);
     shipmentIdPoseidon.inputs[0] <== shipmentId;
+    shipmentIdPoseidon.inputs[1] <== salt;
     shipmentIdHash === shipmentIdPoseidon.out;
 
     // Merkle inclusion proof
