@@ -1,5 +1,5 @@
 const { ethers } = require("hardhat");
-const fibersAbi = require('./Fibers.json');
+const fibersAbi = require('../../artifacts/contracts/fibers.sol/Fibers.json');
 const axios = require('axios');
 const bytes32 = require('bytes32');
 const { groth16 } = require("snarkjs");
@@ -153,6 +153,7 @@ class Blockchain {
                                 quantity_unit: item.quantity_unit,
                                 quantity_value: item.quantity_value,
                                 is_indexed: true,
+                                proof: item.proof,
                         })));
                     }
 

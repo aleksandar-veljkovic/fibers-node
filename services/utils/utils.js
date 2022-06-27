@@ -141,6 +141,20 @@ class Utils {
 
         return { shipmentHash, itemsRootHash: itemsRoot, itemsTree, itemIdHashes, leaves };
     }
+
+    getPartnerInfo(companyId, departmentId) {
+        const company = this.partners.find(partner => partner.id === companyId);
+        const department = company.departments.find(department => department.id === departmentId);
+
+        return {
+            companyId,
+            companyTitle: company.title,
+            departmentId,
+            departmentTitle: department.title,
+            latitude: department.latitude,
+            longitude: department.longitude,
+        }
+    }
 }
 
 module.exports = Utils;

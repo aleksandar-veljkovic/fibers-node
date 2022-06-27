@@ -7,6 +7,10 @@ module.exports = {
       },
       localhost: {
         
+      },
+      harmony_devnet: {
+        url: "https://api.s0.ps.hmny.io/",
+        accounts: [`0xb510a4a2d08c4a28eab3efecc16d0120bd3cb9894fa453422d1e2da0e588bff1`]
       }
     },
     paths: {

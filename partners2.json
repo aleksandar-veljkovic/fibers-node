@@ -1,59 +1,88 @@
 [
   {
     "id": "3a8e82a3b412ece07c7c4cd8d77281e099e7036af7ed97bcaa96dc1fb1ce991a",
-    "title": "Node 2 Company",
+    "title": "AirCargo",
     "country": "Serbia",
     "state": "Serbia",
     "city": "Belgrade",
     "address": "Unknown street 2",
     "email": "office@democompany2.com",
     "createdAt": "2022-06-25T11:51:21.669Z",
-    "updatedAt": "2022-06-25T11:51:21.669Z",
+    "updatedAt": "2022-06-27T21:21:04.688Z",
     "departments": [
       {
         "id": "cbdefe62dae9d7109e25d52b4920ec9cf9b3519b163301a9d51d8d6f21903774",
         "company_id": "3a8e82a3b412ece07c7c4cd8d77281e099e7036af7ed97bcaa96dc1fb1ce991a",
-        "title": "Demo Company Department 2",
+        "title": "Port of Sydney",
         "country": "Serbia",
         "state": "Serbia",
         "city": "Belgrade",
         "address": "Unknown street 2",
         "email": "dep1@democompany2.com",
-        "latitude": 44,
-        "longitude": 20,
+        "latitude": -33.8442278,
+        "longitude": 151.1985551,
         "pub_address": "0x37e828F6E270EC2AFF4FecFB3098aac0B878B653",
         "api": "http://localhost:9339",
         "createdAt": "2022-06-25T11:51:58.069Z",
-        "updatedAt": "2022-06-25T11:51:58.069Z"
+        "updatedAt": "2022-06-27T21:17:16.096Z"
       }
     ]
   },
   {
     "id": "1b58a94ce84bf83016e777c77e74c0ca508d832cb82d2f4ccb7946a503ce72cb",
-    "title": "Node 1 Company",
+    "title": "Shipping Global Inc.",
     "country": "Serbia",
     "state": "Serbia",
     "city": "Belgrade",
     "address": "Unknown street 1",
     "email": "office@democompany1.com",
     "createdAt": "2022-06-25T11:51:27.273Z",
-    "updatedAt": "2022-06-25T11:51:27.273Z",
+    "updatedAt": "2022-06-27T21:21:33.617Z",
     "departments": [
       {
         "id": "7f386528170deda53d8e5b18efdfb2f5ece6c7a6272acf4183b2c543510de89c",
         "company_id": "1b58a94ce84bf83016e777c77e74c0ca508d832cb82d2f4ccb7946a503ce72cb",
-        "title": "Demo Company Department 1",
+        "title": "Port of Shanghai",
         "country": "Serbia",
         "state": "Serbia",
         "city": "Belgrade",
         "address": "Unknown street 1",
         "email": "dep1@democompany1.com",
-        "latitude": 44,
-        "longitude": 20,
+        "latitude": 31.3139927,
+        "longitude": 121.6200358,
         "pub_address": "0x37e828F6E270EC2AFF4FecFB3098aac0B878B653",
         "api": "http://localhost:9229",
         "createdAt": "2022-06-25T11:52:18.359Z",
-        "updatedAt": "2022-06-25T11:52:18.359Z"
+        "updatedAt": "2022-06-27T21:16:08.707Z"
+      }
+    ]
+  },
+  {
+    "id": "2b2e5b02044956a9f52df995f585f2949154812be7fb68d8dd0257610d402d1d",
+    "title": "World Shop",
+    "country": "Serbia",
+    "state": "Serbia",
+    "city": "Belgrade",
+    "address": "Unknown street 3",
+    "email": "office@democompany3.com",
+    "createdAt": "2022-06-26T16:34:36.163Z",
+    "updatedAt": "2022-06-27T21:22:11.940Z",
+    "departments": [
+      {
+        "id": "6090d4e227680fe1f8da13ab1f162e3955a2052ac03c4afedad459af9cf5fe03",
+        "company_id": "2b2e5b02044956a9f52df995f585f2949154812be7fb68d8dd0257610d402d1d",
+        "title": "Belgrade Warehouse",
+        "country": "Serbia",
+        "state": "Serbia",
+        "city": "Belgrade",
+        "address": "Unknown street 3",
+        "email": "dep1@democompany3.com",
+        "latitude": 44.8244464,
+        "longitude": 20.4740974,
+        "pub_address": "0x37e828F6E270EC2AFF4FecFB3098aac0B878B653",
+        "api": "http://localhost:9449",
+        "createdAt": "2022-06-26T16:36:01.950Z",
+        "updatedAt": "2022-06-27T21:18:21.658Z"
       }
     ]
   }

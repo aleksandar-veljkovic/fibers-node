@@ -1,5 +1,5 @@
 const { ValidationError } = require('joi');
-const { UniqueConstraintError } = require('sequelize');
+const { UniqueConstraintError, Op } = require('sequelize');
 const BaseRouteHandlers = require('../base-route-handlers');
 const { buildPoseidon } = require('circomlibjs');
 const bytes32 = require('bytes32');
@@ -170,6 +170,7 @@ class NetworkRouteHandlers extends BaseRouteHandlers {
         const { itemId } = req.params;
 
         const items = await this.shipmentItemController.findAll({ item_id: itemId, is_indexed: true });
+        console.log(items);
         if (items.length == 0) {
             this.sendResponse(res, 404, 'Not found', null);
             return next();
@@ -178,12 +179,14 @@ class NetworkRouteHandlers extends BaseRouteHandlers {
         const responseItems = [];
         for (const item of items) {
             const { shipment_id: shipmentId } = item;
-            const shipments = await this.shipmentController.findAll({ id: shipmentId, status: 'CONFIRMED' });
+            const shipments = await this.shipmentController.findAll({ id: shipmentId, status: {[Op.not]: 'UNPUBLISHED' }});
 
             for (const shipment of shipments) {
                 const resItem = {
                     itemId: item.item_id,
                     shipment: {
+                        sender: this.utils.getPartnerInfo(shipment.source_company, shipment.source_department),
+                        recipient: this.utils.getPartnerInfo(shipment.target_company, shipment.target_department),
                         shipmentLabel: shipment.label,
                         shipmentLabelHash: shipment.label_hash,
                         hashProof: shipment.label_hash_proof

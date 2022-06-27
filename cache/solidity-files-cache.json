@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/aleksandarveljkovic/Projects/fibers-node/contracts/fibers.sol": {
-      "lastModificationDate": 1656109916519,
-      "contentHash": "f2328951ef96e40d905259b8e4a43bc6",
+      "lastModificationDate": 1656255865615,
+      "contentHash": "6438824b32d8d1f2d291ac0c07e97d4b",
       "sourceName": "contracts/fibers.sol",
       "solcConfig": {
         "version": "0.8.13",

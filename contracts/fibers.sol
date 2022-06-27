@@ -3,8 +3,22 @@ pragma solidity ^0.8.13;
 import "./shipment-verifier.sol";
 
 contract Fibers is ShipmentVerifier {
+    address owner;
+
+    constructor() {
+        owner = msg.sender;
+    }
+
     event ShipmentRegistered(bytes32 shipmentLabelHash, bytes32 senderDepartment, bytes32 recipientDepartment);
     event ShipmentConfirmed(bytes32 shipmentLabelHash);
+
+    struct User {
+        bytes32 companyId;
+        bytes32 departmentId;
+        bool isActive;
+    }
+
+    mapping(address => User) whitelistedUsers;
 
     struct Shipment {
         bytes32 shipmentLabelHash;
@@ -19,122 +33,134 @@ contract Fibers is ShipmentVerifier {
         bytes32 recipientCompany;
         bytes32 recipientDepartment;
         bytes32 shipmentCreator;
+        uint creationTimestamp;
         bool isConfirmed;
+        
     }
 
     mapping(bytes32 => Shipment) shipments;
 
-    /**
-     * Register new shipment as sender
-     */
-     function registerSentShipment(
-        bytes32 shipmentLabelHash,
-        bytes32 sentShipmentHash,
-        uint sentMass,
-        uint sentDate,
-        bytes32 senderCompany,
-        bytes32 senderDepartment,
-        bytes32 recipientCompany,
-        bytes32 recipientDepartment
-    ) public {
-        require(shipments[shipmentLabelHash].shipmentLabelHash == bytes32(0), "Shipment already registered");
-
-        Shipment memory newShipment;
-        newShipment.shipmentLabelHash = shipmentLabelHash;
-        newShipment.sentShipmentHash = sentShipmentHash;
-        newShipment.sentMass = sentMass;
-        newShipment.sentDate = sentDate;
-        newShipment.senderCompany = senderCompany;
-        newShipment.senderDepartment = senderDepartment;
-        newShipment.recipientCompany = recipientCompany;
-        newShipment.recipientDepartment = recipientDepartment;
-        newShipment.shipmentCreator = senderDepartment;
-        shipments[shipmentLabelHash] = newShipment;
-
-        emit ShipmentRegistered(shipmentLabelHash, senderDepartment, recipientDepartment);
+    modifier onlyOwner() {
+        require(msg.sender == owner);
+        _;
     }
 
     /**
-     * Register new shipment as recipient
-     */
-     function registerReceivedShipment(
-        bytes32 shipmentLabelHash,
-        bytes32 receivedShipmentHash,
-        uint receivedMass,
-        uint receivedDate,
-        bytes32 senderCompany,
-        bytes32 senderDepartment,
-        bytes32 recipientCompany,
-        bytes32 recipientDepartment
-    ) public {
-        require(shipments[shipmentLabelHash].shipmentLabelHash == bytes32(0), "Shipment already registered");
+    * Whitelist new user
+    */
+    function addUser(address wallet, bytes32 companyId, bytes32 departmentId) public onlyOwner {
+        require(whitelistedUsers[wallet].companyId == 0, "User already registered");
 
-        Shipment memory newShipment;
-        newShipment.shipmentLabelHash = shipmentLabelHash;
-        newShipment.receivedShipmentHash = receivedShipmentHash;
-        newShipment.receivedMass = receivedMass;
-        newShipment.receivedDate = receivedDate;
-        newShipment.senderCompany = senderCompany;
-        newShipment.senderDepartment = senderDepartment;
-        newShipment.recipientCompany = recipientCompany;
-        newShipment.recipientDepartment = recipientDepartment;
-        newShipment.shipmentCreator = recipientDepartment;
-        shipments[shipmentLabelHash] = newShipment;
-
-        emit ShipmentRegistered(shipmentLabelHash, senderDepartment, recipientDepartment);
+        whitelistedUsers[wallet].companyId = companyId;
+        whitelistedUsers[wallet].departmentId = departmentId;
+        whitelistedUsers[wallet].isActive = true;
     }
 
     /**
-     * Confirm received shipment
-     */
-     function confirmSentShipment(
-        uint[2] memory a,
-        uint[2][2] memory b,
-        uint[2] memory c,
-        bytes32 shipmentLabelHash,
-        bytes32 sentShipmentHash,
-        uint sentMass,
-        uint sentDate
-    ) public {
-        require(shipments[shipmentLabelHash].shipmentLabelHash != bytes32(0), "Shipment not registered");
-        require(shipments[shipmentLabelHash].isConfirmed == false, "Shipment is already confirmed");
-        require(shipments[shipmentLabelHash].sentShipmentHash == 0, "Sent shipment data is already added");
-        require(verifyProof(a, b, c, [uint(shipmentLabelHash), uint(sentShipmentHash)]) == true, "Invalid proof");
-
-        shipments[shipmentLabelHash].sentShipmentHash = sentShipmentHash;
-        shipments[shipmentLabelHash].sentMass = sentMass;
-        shipments[shipmentLabelHash].sentDate = sentDate;
-        shipments[shipmentLabelHash].isConfirmed = true;
-
-        emit ShipmentConfirmed(shipmentLabelHash);
+    * Deactivate user
+    */
+    function deactivateUser(address wallet) public onlyOwner {
+        require(whitelistedUsers[wallet].companyId != 0, "Unknown user");
+        whitelistedUsers[wallet].isActive = false;
     }
 
     /**
-     * Confirm received shipment
-     */
-     function confirmReceivedShipment(
-        uint[2] memory a,
-        uint[2][2] memory b,
-        uint[2] memory c,
-        bytes32 shipmentLabelHash,
-        bytes32 receivedShipmentHash,
-        uint receivedMass,
-        uint receivedDate
-    ) public {
-        require(shipments[shipmentLabelHash].shipmentLabelHash != bytes32(0), "Shipment not registered");
-        require(shipments[shipmentLabelHash].isConfirmed == false, "Shipment is already confirmed");
-        require(shipments[shipmentLabelHash].receivedShipmentHash == 0, "Sent shipment data is already added");
-        require(verifyProof(a, b, c, [uint256(shipmentLabelHash), uint256(receivedShipmentHash) ]) == true, "Invalid proof");
-
-        shipments[shipmentLabelHash].receivedShipmentHash = receivedShipmentHash;
-        shipments[shipmentLabelHash].receivedMass = receivedMass;
-        shipments[shipmentLabelHash].receivedDate = receivedDate;
-        shipments[shipmentLabelHash].isConfirmed = true;
-
-        emit ShipmentConfirmed(shipmentLabelHash);
-    }
-
+    * Get shipment by label hash
+    */
     function getShipment(bytes32 shipmentLabelHash) public view returns (Shipment memory s) {
         s = shipments[shipmentLabelHash];
+    }
+
+    /**
+     * Register new shipment
+     */
+     function registerShipment(
+        bytes32 shipmentLabelHash,
+        bytes32 shipmentHash,
+        uint shipmentMass,
+        uint shipmentDate,
+        bytes32 senderCompany,
+        bytes32 senderDepartment,
+        bytes32 recipientCompany,
+        bytes32 recipientDepartment
+    ) public {
+        require(shipments[shipmentLabelHash].shipmentLabelHash == bytes32(0), "Shipment already registered");
+        require(whitelistedUsers[msg.sender].companyId != 0, "Unknown user");
+        require(whitelistedUsers[msg.sender].isActive, "Inactive user");
+        require((
+            whitelistedUsers[msg.sender].companyId == senderCompany &&
+            whitelistedUsers[msg.sender].departmentId == senderDepartment
+        )
+        || 
+        (
+            whitelistedUsers[msg.sender].companyId == recipientCompany &&
+            whitelistedUsers[msg.sender].departmentId == recipientDepartment
+        ), "User is not sender nor recipient");
+
+        Shipment memory newShipment;
+        newShipment.senderCompany = senderCompany;
+        newShipment.senderDepartment = senderDepartment;
+        newShipment.recipientCompany = recipientCompany;
+        newShipment.recipientDepartment = recipientDepartment;
+        newShipment.shipmentCreator = whitelistedUsers[msg.sender].departmentId;
+        newShipment.shipmentLabelHash = shipmentLabelHash;
+        newShipment.creationTimestamp = block.timestamp;
+        
+        if (whitelistedUsers[msg.sender].companyId == senderCompany) {
+            newShipment.sentShipmentHash = shipmentHash;
+            newShipment.sentMass = shipmentMass;
+            newShipment.sentDate = shipmentDate;
+        } else {
+            newShipment.receivedShipmentHash = shipmentHash;
+            newShipment.receivedMass = shipmentMass;
+            newShipment.receivedDate = shipmentDate;
+        }
+        
+        shipments[shipmentLabelHash] = newShipment;
+
+        emit ShipmentRegistered(shipmentLabelHash, senderDepartment, recipientDepartment);
+    }
+
+    /**
+     * Confirm shipment
+     */
+     function confirmShipment(
+        uint[2] memory a,
+        uint[2][2] memory b,
+        uint[2] memory c,
+        bytes32 shipmentLabelHash,
+        bytes32 shipmentHash,
+        uint shipmentMass,
+        uint shipmentDate
+    ) public {
+        require(shipments[shipmentLabelHash].shipmentLabelHash != bytes32(0), "Shipment not registered");
+        require(shipments[shipmentLabelHash].isConfirmed == false, "Shipment is already confirmed");
+        require(whitelistedUsers[msg.sender].isActive, "Inactive user");
+        require(verifyProof(a, b, c, [uint(shipmentLabelHash), uint(shipmentHash)]) == true, "Invalid proof");
+        require((
+            shipments[shipmentLabelHash].sentShipmentHash == 0 &&
+            whitelistedUsers[msg.sender].companyId == shipments[shipmentLabelHash].senderCompany &&
+            whitelistedUsers[msg.sender].departmentId == shipments[shipmentLabelHash].senderDepartment
+        )
+        || 
+        (
+            shipments[shipmentLabelHash].receivedShipmentHash == 0 &&
+            whitelistedUsers[msg.sender].companyId == shipments[shipmentLabelHash].recipientCompany &&
+            whitelistedUsers[msg.sender].departmentId == shipments[shipmentLabelHash].recipientDepartment
+        ), "Invalid user action");
+        
+        shipments[shipmentLabelHash].isConfirmed = true;
+
+        if (whitelistedUsers[msg.sender].companyId == shipments[shipmentLabelHash].senderCompany) {
+            shipments[shipmentLabelHash].sentShipmentHash = shipmentHash;
+            shipments[shipmentLabelHash].sentMass = shipmentMass;
+            shipments[shipmentLabelHash].sentDate = shipmentDate;
+        } else {
+            shipments[shipmentLabelHash].receivedShipmentHash = shipmentHash;
+            shipments[shipmentLabelHash].receivedMass = shipmentMass;
+            shipments[shipmentLabelHash].receivedDate = shipmentDate;
+        }
+
+        emit ShipmentConfirmed(shipmentLabelHash);
     }
 }

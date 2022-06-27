@@ -71,7 +71,7 @@ class BlockchainRouteHandlers extends BaseRouteHandlers {
                 }
 
                 // Submit to Blockchain
-                const result = await this.blockchain.fibersContract.registerSentShipment(
+                const result = await this.blockchain.fibersContract.registerShipment(
                     `0x${shipmentLabelHash}`,
                     `0x${paddedShipmentHash}`,
                     sentMass,
@@ -146,7 +146,7 @@ class BlockchainRouteHandlers extends BaseRouteHandlers {
                 console.log(paddedShipmentHashHex.split('0x')[1]);
 
                 // Confirm shipment
-                const result = await this.blockchain.fibersContract.confirmReceivedShipment(
+                const result = await this.blockchain.fibersContract.confirmShipment(
                     a, b, c,
                     shipmentLabelHashHex,
                     paddedShipmentHashHex,
