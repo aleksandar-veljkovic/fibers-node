@@ -97,15 +97,11 @@ class NetworkRouteHandlers extends BaseRouteHandlers {
     // TODO: Verify received data
 
     try {
-        console.log(items);
-
         const reconciliationTable = items.map(item => ({
             item_id: item.item_id,
             quantity_unit: item.quantity_unit,
             quantity_value: item.quantity_value,
         }))
-
-        console.log(reconciliationTable);
 
         await this.shipmentController.create({ 
             id,
